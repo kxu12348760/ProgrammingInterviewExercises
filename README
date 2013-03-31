@@ -1,0 +1,7 @@
+-This repo contains solutions to all exercises in the book "Elements of Programming Interviews" (authors: Adnan Aziz, Amit Prakash, Tsung-Hsien Lee) in Python.
+
+-Each file in the repo contains a python executable named "ch{X}Solutions.py", where {X} is a chapter number in the book.
+
+-Each file contains method implementations of all the problems in one chapter, along with a PyUnit test class containing test methods to test all the aforementioned method implementations.
+
+-Each file is executable, and executing each file will run all defined test methods within the file.
