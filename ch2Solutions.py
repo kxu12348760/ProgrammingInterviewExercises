@@ -264,6 +264,80 @@ def gcd(a, b, showPrintMsgs=True):
         print "The gcd of {0} and {1} is {2}".format(a, b, someGcd)
     return someGcd
 
+# Enumerating Primes (Problem 2.11)
+def enumerateAllPrimes(n, showPrintMsgs=True):
+    if showPrintMsgs:
+        print "Enumerating all primes between 1 and {0}".format(n)
+    allPrimes = [] if n < 2 else [2]
+    if n > 2:
+        # for 3, consider array of size 1,
+        # for 5, consider array of size 2,
+        # for 7, consider array of size 3, etc... 
+        size = ((n - 3) >> 1) + 1
+        isPrime = [1] * size
+        for i in range(0, size):
+            if isPrime[i] == 1:
+                p = (i << 1) + 3
+                allPrimes.append(p)
+                j = ((i * i) << 1) + (6 * i) + 3
+                while j < size:
+                    isPrime[j] = 0
+                    j = j + p
+    if showPrintMsgs:
+        print "All primes between 1 and {0}: {1}".format(n, allPrimes)
+    return allPrimes
+
+class Rect:
+    """A Rectangle class"""
+    def __init__(self, x, y, width, height):
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+
+    def __str__(self):
+        return "Rect[x={x}, y={y}, width={width}, height={height}]".format(x=self.x, y=self.y, width=self.width, height=self.height)
+
+    def __eq__(self, other):
+        return self.x == other.x and \
+            self.y == other.y and \
+            self.width == other.width and \
+            self.height == other.height
+
+# Intersecting Rectangles (Problem 2.12)
+def hasIntersection(rectR, rectS, showPrintMsgs=True):
+    # For checking no intersections: check if one rectangle's x0 is beyond another rectangle's x1+w1, same with y0 and y1+height
+    intersect = not ((rectR.x > (rectS.x + rectS.width)) or \
+        ((rectR.x + rectR.width) < rectS.x) or \
+        (rectR.y > (rectS.y + rectS.height)) or \
+        ((rectR.y + rectR.height) < rectS.y))
+    if showPrintMsgs:
+        print "Rect {rectR} and {rectS} {answer} intersections".format(rectR=rectR, rectS=rectS, answer="has" if intersect else "does not have")
+    return intersect
+
+def getIntersection(rectR, rectS, showPrintMsgs=True):
+    x = 0
+    y = 0
+    width = 0
+    height = 0
+    if hasIntersection(rectR, rectS, showPrintMsgs):
+        if rectR.x > rectS.x:
+            x = rectR.x
+            width = min(rectS.x + rectS.width - rectR.x, rectR.width)
+        else:
+            x = rectS.x
+            width = min(rectR.x + rectR.width - rectS.x, rectS.width)
+        if rectR.y > rectS.y:
+            y = rectR.y
+            height = min(rectS.y + rectS.height - rectR.y, rectR.height)
+        else:
+            y = rectS.y
+            height = min(rectR.y + rectR.height - rectS.y, rectS.height)
+    intersect = Rect(x, y, width, height)
+    if showPrintMsgs:
+        print "Rect {rectR} and {rectS} has intersecting rectangle {intersect}".format(rectR=rectR, rectS=rectS, intersect=intersect)
+    return intersect
+
 class Ch2SolutionsTestCase(unittest.TestCase):
     # Construct a precomputed table of parities for 16-bit integers
     # constructPrecomputedParityTable()
@@ -342,6 +416,27 @@ class Ch2SolutionsTestCase(unittest.TestCase):
         self.assertEqual(0, gcd(0, 10))
         self.assertEqual(10, gcd(10, 20))
         self.assertEqual(6, gcd(12, 30))
+
+    def testEnumerateAllPrimes(self):
+        # Tests for enumerating all primes (problem 2.11)
+        self.assertEqual([], enumerateAllPrimes(1))
+        self.assertEqual([], enumerateAllPrimes(0))
+        self.assertEqual([2], enumerateAllPrimes(2))
+        self.assertEqual([2, 3, 5, 7, 11], enumerateAllPrimes(12))
+        self.assertEqual([2, 3, 5, 7, 11, 13, 17, 19, 23, 29], enumerateAllPrimes(30))
+
+    def testRectangleIntersection(self):
+        # Tests for rectangle intersection (problem 2.12)
+        NON_INTERSECTING_RECT = Rect(0, 0, 0, 0)
+        CENTRAL_RECT = Rect(-4, -2, 8, 4)
+        self.assertEqual(Rect(0, 0, 0, 0), Rect(0, 0, 0, 0))
+        self.assertEqual(NON_INTERSECTING_RECT, getIntersection(CENTRAL_RECT, Rect(-2, 3, 4, 2)))
+        self.assertEqual(NON_INTERSECTING_RECT, getIntersection(CENTRAL_RECT, Rect(5, 6, 7, 8)))
+        self.assertEqual(CENTRAL_RECT, getIntersection(CENTRAL_RECT, Rect(-5, -6, 20, 30)))
+        self.assertEqual(NON_INTERSECTING_RECT, getIntersection(CENTRAL_RECT, Rect(-9, -10, 1, 2)))
+        self.assertEqual(Rect(0, 0, 4, 2), getIntersection(CENTRAL_RECT, Rect(0, 0, 10, 10)))
+        self.assertEqual(Rect(-2, -2, 4, 4), getIntersection(CENTRAL_RECT, Rect(-2, -5, 4, 30)))
+        self.assertEqual(Rect(-4, 0, 8, 2), getIntersection(CENTRAL_RECT, Rect(-9, 0, 30, 2)))
 
 if __name__ == '__main__':
     unittest.main()
