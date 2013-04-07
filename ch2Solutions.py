@@ -2,30 +2,38 @@
 
 import unittest
 
+SHOW_PRINT_MSGS = False
+
 # 2.1: Computing Parity
 def parity1(someInt):
-    print "Calculating parity for: {0}, which is {1}".format(someInt, bin(someInt))
+    if SHOW_PRINT_MSGS:
+        print "Calculating parity for: {0}, which is {1}".format(someInt, bin(someInt))
     parity = 0
     while someInt > 0:
         if someInt & 1 == 1:
             parity ^= 1
         someInt >>= 1
-    print "parity is {0}\n".format(parity)
+    if SHOW_PRINT_MSGS:
+        print "parity is {0}\n".format(parity)
     return parity   
 
 def dropLowestSetBit(someInt):
-    print "Dropping lowest set bit for {0}, which is {1}".format(someInt, bin(someInt))
+    if SHOW_PRINT_MSGS:
+        print "Dropping lowest set bit for {0}, which is {1}".format(someInt, bin(someInt))
     result = someInt & (someInt - 1)
-    print "Result is {0}, which is {1}".format(result, bin(result))
+    if SHOW_PRINT_MSGS:
+        print "Result is {0}, which is {1}".format(result, bin(result))
     return result
 
 def parity2(someInt):
-    print "Calculating parity2 for: {0}, which is {1}".format(someInt, bin(someInt))
+    if SHOW_PRINT_MSGS:
+        print "Calculating parity2 for: {0}, which is {1}".format(someInt, bin(someInt))
     parity = 0
     while someInt > 0:
         parity ^= 1
         someInt = dropLowestSetBit(someInt)
-    print "parity is {0}\n".format(parity)
+    if SHOW_PRINT_MSGS:
+        print "parity is {0}\n".format(parity)
     return parity
 
 '''
@@ -46,51 +54,55 @@ def parity3(someInt):
 '''
 
 # 2.2: Swapping bits
-def extractLowestSetBit(someLong, showPrintMsgs=True):
-    if showPrintMsgs:
+def extractLowestSetBit(someLong):
+    if SHOW_PRINT_MSGS:
         print "Extracting the lowest set bit for {0}, which is {1}".format(someLong, bin(someLong))
     result = someLong & ~(someLong -1)
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "Result is {0}, which is {1}".format(result, bin(result))
     return result
 
-def getBitAtIndex(someLong, i, showPrintMsgs=True):
-    if showPrintMsgs:
+def getBitAtIndex(someLong, i):
+    if SHOW_PRINT_MSGS:
         print "Extracting the bit at index {0} for {1}".format(i, someLong)
     result = 1 if ((someLong & (1 << i)) != 0) else 0
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print result
     return result
 
-def swapBits(someLong, i, j, showPrintMsgs=True):
-    bitAtIndexI = getBitAtIndex(someLong, i, showPrintMsgs)
-    bitAtIndexJ = getBitAtIndex(someLong, j, showPrintMsgs)
+def swapBits(someLong, i, j):
+    bitAtIndexI = getBitAtIndex(someLong, i)
+    bitAtIndexJ = getBitAtIndex(someLong, j)
     if bitAtIndexI ^ bitAtIndexJ:
-        if showPrintMsgs:
+        if SHOW_PRINT_MSGS:
             print "swapping bits {0} and {1} for {2}, which is {3} in binary".format(i, j, someLong, bin(someLong))
         someLong ^= (1 << i)
         someLong ^= (1 << j)
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "result is {0}, which is {1} in binary\n".format(someLong, bin(someLong))
     return someLong
 
 # 2.3: Bit reversal
 def reverseBitsRegular(someLong):
-    print "Reversing bits for {0}, which is {1} in binary".format(someLong, bin(someLong))
+    if SHOW_PRINT_MSGS:
+        print "Reversing bits for {0}, which is {1} in binary".format(someLong, bin(someLong))
     for i in range(0, 32):
-        someLong = swapBits(someLong, i, 63 - i, showPrintMsgs=False)
-    print "result is {0}, which is {1} in binary\n".format(someLong, bin(someLong))
+        someLong = swapBits(someLong, i, 63 - i)
+    if SHOW_PRINT_MSGS:
+        print "result is {0}, which is {1} in binary\n".format(someLong, bin(someLong))
     return someLong
 
 # 2.4: Closest Integers with the same weight
 def closestIntSameWeight(x):
-    print "Calculating closestIntSameWeight for {0}, which is {1} in binary".format(x, bin(x))
+    if SHOW_PRINT_MSGS:
+        print "Calculating closestIntSameWeight for {0}, which is {1} in binary".format(x, bin(x))
     for i in range(0, 64):
-        ithBit = getBitAtIndex(x, i, showPrintMsgs = False)
-        jthBit = getBitAtIndex(x, i + 1, showPrintMsgs = False)
+        ithBit = getBitAtIndex(x, i)
+        jthBit = getBitAtIndex(x, i + 1)
         if ithBit != jthBit:
-            closestInt = swapBits(x, i, i+1, showPrintMsgs = False)
-            print "Calculated closestIntSameWeight for {0} is {1}, or {2} in binary\n".format(x, closestInt, bin(closestInt))
+            closestInt = swapBits(x, i, i+1)
+            if SHOW_PRINT_MSGS:
+                print "Calculated closestIntSameWeight for {0} is {1}, or {2} in binary\n".format(x, closestInt, bin(closestInt))
             return closestInt
 
 # 2.5 Printing power set
@@ -105,7 +117,7 @@ def printPowerSet(myList):
         subSetList = []
         # Go through each bit, as the number of bits is equal to setSize, and if set, add to subset
         for j in range(0, setSize):
-            if getBitAtIndex(i, j, showPrintMsgs = False):
+            if getBitAtIndex(i, j):
                 subSetList.append(myUniqueList[j])
         print set(subSetList)
     print
@@ -138,14 +150,14 @@ def intToChar(someInt, someBase=10):
     else:
         raise Exception("Cannot convert integer {0} to a character".format(someInt))
 
-def stringToInt(someString, someBase=10, showPrintMsgs=True):
+def stringToInt(someString, someBase=10):
     someInt = 0
     if len(someString) == 0:
         raise Exception("Cannot convert empty string to integer")
     isNegative = (someString[0] == '-')
     startIndex = 1 if isNegative else 0
     multiplier = -1 if isNegative else 1
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "Converting {0} to integer".format(someString)
     for i in range(startIndex, len(someString)):
         someChar = someString[i]
@@ -155,15 +167,15 @@ def stringToInt(someString, someBase=10, showPrintMsgs=True):
             print str(e)
             return
         someInt = (someBase * someInt + charInt)
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "Converted integer is {0}\n".format(someInt)
     return multiplier * someInt
 
-def intToString(someInt, someBase=10, showPrintMsgs=True):
+def intToString(someInt, someBase=10):
     isNegative = (someInt < 0)
     someString = ''
     someInt = abs(someInt)
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "Converting {0} to a string".format(someInt)
     while (someInt > 0):
         remainder = someInt % someBase
@@ -175,49 +187,49 @@ def intToString(someInt, someBase=10, showPrintMsgs=True):
         someString = remainderChar + someString
         someInt = someInt / someBase
     someString = '-' + someString if isNegative else someString
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "Resulting string is {0}\n".format(someString)
     return someString
 
 # 2.7
 # Converting an integer string from one base to another.
-def convertToBase(someIntString, base1, base2, showPrintMsgs=True):
-    if showPrintMsgs:
+def convertToBase(someIntString, base1, base2):
+    if SHOW_PRINT_MSGS:
         print "Converting {0} in base {1} to base {2}".format(someIntString, base1, base2)
-    integerInBase1 = stringToInt(someIntString, base1, showPrintMsgs=False)
-    stringInBase2 = intToString(integerInBase1, base2, showPrintMsgs=False)
-    if showPrintMsgs:
+    integerInBase1 = stringToInt(someIntString, base1)
+    stringInBase2 = intToString(integerInBase1, base2)
+    if SHOW_PRINT_MSGS:
         print "Converted string in base {0} is {1}\n".format(base2, stringInBase2)
     return stringInBase2
 
 # 2.8
 # Spreadsheet column encoding
-def ssDecodeColId(columnIdString, showPrintMsgs=True):
-    if showPrintMsgs:
+def ssDecodeColId(columnIdString):
+    if SHOW_PRINT_MSGS:
         print "Encoding the following column id {0} to an integer".format(columnIdString)
     colIdInt = 0
     for someChar in columnIdString:
         colIdInt = 26 * colIdInt + ord(someChar) - ord('A') + 1
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "The encoded column id integer is {0}\n".format(colIdInt)
     return colIdInt
 
 # 2.9
 # Elias Gamma Encoding
-def encodeElias(someIntList, showPrintMsgs=True):
-    if showPrintMsgs:
+def encodeElias(someIntList):
+    if SHOW_PRINT_MSGS:
         print "Encoding the following list {0}".format(someIntList)
     stringEncoding = ""
     for someInt in someIntList:
-        someIntString = intToString(someInt, someBase=2, showPrintMsgs=False)
+        someIntString = intToString(someInt, someBase=2)
         stringEncoding = stringEncoding + '0' *( len(someIntString) - 1) + someIntString
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "The Encoding resulted in the following string {0}\n".format(stringEncoding)
     return stringEncoding
 
 # Elias Gamma Decoding
-def decodeElias(someEncodingString, showPrintMsgs=True):
-    if showPrintMsgs:
+def decodeElias(someEncodingString):
+    if SHOW_PRINT_MSGS:
         print "Decoding the following string {0}".format(someEncodingString)
     someIntList = []
     numZeroes = 0
@@ -230,11 +242,11 @@ def decodeElias(someEncodingString, showPrintMsgs=True):
         else:
             newIndex = index + numZeroes + 1
             subString = someEncodingString[index : newIndex]
-            someInt = stringToInt(subString, someBase=2, showPrintMsgs=False)
+            someInt = stringToInt(subString, someBase=2)
             someIntList.append(someInt)
             numZeroes = 0
             index = newIndex
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "The decoding is the following list {0}\n".format(someIntList)
     return someIntList
 
@@ -242,7 +254,7 @@ def decodeElias(someEncodingString, showPrintMsgs=True):
 def isEven(someInt):
     return someInt & 1 == 0
 
-def gcd(a, b, showPrintMsgs=True):
+def gcd(a, b):
     isAEven = isEven(a)
     isBEven = isEven(b)
     someGcd = 0
@@ -251,22 +263,22 @@ def gcd(a, b, showPrintMsgs=True):
     elif a == b:
         someGcd = a
     elif isAEven and isBEven:
-        someGcd = gcd(a>>1, b>>1, showPrintMsgs=False)<<1
+        someGcd = gcd(a>>1, b>>1)<<1
     elif isAEven:
-        someGcd = gcd(a>>1, b, showPrintMsgs=False)
+        someGcd = gcd(a>>1, b)
     elif isBEven:
-        someGcd = gcd(a, b>>1, showPrintMsgs=False)
+        someGcd = gcd(a, b>>1)
     elif a > b:
-        someGcd = gcd (a-b, b, showPrintMsgs=False)
+        someGcd = gcd (a-b, b)
     else:
-        someGcd = gcd(a, b-a, showPrintMsgs=False)
-    if showPrintMsgs:
+        someGcd = gcd(a, b-a)
+    if SHOW_PRINT_MSGS:
         print "The gcd of {0} and {1} is {2}".format(a, b, someGcd)
     return someGcd
 
 # Enumerating Primes (Problem 2.11)
-def enumerateAllPrimes(n, showPrintMsgs=True):
-    if showPrintMsgs:
+def enumerateAllPrimes(n):
+    if SHOW_PRINT_MSGS:
         print "Enumerating all primes between 1 and {0}".format(n)
     allPrimes = [] if n < 2 else [2]
     if n > 2:
@@ -283,7 +295,7 @@ def enumerateAllPrimes(n, showPrintMsgs=True):
                 while j < size:
                     isPrime[j] = 0
                     j = j + p
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "All primes between 1 and {0}: {1}".format(n, allPrimes)
     return allPrimes
 
@@ -305,22 +317,22 @@ class Rect:
             self.height == other.height
 
 # Intersecting Rectangles (Problem 2.12)
-def hasIntersection(rectR, rectS, showPrintMsgs=True):
+def hasIntersection(rectR, rectS):
     # For checking no intersections: check if one rectangle's x0 is beyond another rectangle's x1+w1, same with y0 and y1+height
     intersect = not ((rectR.x > (rectS.x + rectS.width)) or \
         ((rectR.x + rectR.width) < rectS.x) or \
         (rectR.y > (rectS.y + rectS.height)) or \
         ((rectR.y + rectR.height) < rectS.y))
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "Rect {rectR} and {rectS} {answer} intersections".format(rectR=rectR, rectS=rectS, answer="has" if intersect else "does not have")
     return intersect
 
-def getIntersection(rectR, rectS, showPrintMsgs=True):
+def getIntersection(rectR, rectS):
     x = 0
     y = 0
     width = 0
     height = 0
-    if hasIntersection(rectR, rectS, showPrintMsgs):
+    if hasIntersection(rectR, rectS):
         if rectR.x > rectS.x:
             x = rectR.x
             width = min(rectS.x + rectS.width - rectR.x, rectR.width)
@@ -334,9 +346,68 @@ def getIntersection(rectR, rectS, showPrintMsgs=True):
             y = rectS.y
             height = min(rectR.y + rectR.height - rectS.y, rectS.height)
     intersect = Rect(x, y, width, height)
-    if showPrintMsgs:
+    if SHOW_PRINT_MSGS:
         print "Rect {rectR} and {rectS} has intersecting rectangle {intersect}".format(rectR=rectR, rectS=rectS, intersect=intersect)
     return intersect
+
+# Multiplication no arithmetic operators (Problem 2.13)
+def add(a, b):
+    n = 1
+    sum = 0
+    carry = 0
+    while (n <= a or n <= b or carry != 0):
+        an = a & n
+        bn = b & n
+        if SHOW_PRINT_MSGS:
+            print "an is {an} and bn is {bn}".format(an=an,bn=bn)
+        sumn = (an ^ bn ^ carry)
+        sum = sum | sumn
+        if SHOW_PRINT_MSGS:
+            print "Sum n is {sumn}".format(sumn=bin(sumn))
+        carry = (an & bn) | (an & carry) | (bn & carry)
+        carry <<= 1
+        n <<=1
+        if SHOW_PRINT_MSGS:
+            print "n is {n}".format(n=n)
+    if SHOW_PRINT_MSGS:
+        print "The sum of {a} and {b} is {sum}".format(a=a,b=b,sum=sum)
+    return sum
+
+def multiply(a, b):
+    result = 0
+    n = 1
+    an = a
+    while (n <= b):
+        bn = b & n
+        if bn > 0:
+            if SHOW_PRINT_MSGS:
+                print "n is {n}, bn is {bn}, result is {result}, an is {an}".format(n=n,bn=bn,result=result,an=an)
+            result = add(result, an)
+        n <<= 1
+        an <<= 1
+    if SHOW_PRINT_MSGS:
+        print "The product of {a} and {b} is {result}".format(a=a,b=b,result=result)
+    return result
+
+# Division using only addition, subtraction, and multiplication (Problem 2.14)
+def divide(x, y):
+    result = 0
+    if x > y:
+        result = 1
+        remainder = x - y
+        while remainder >= y:
+            if y * result < remainder:
+                result <<= 1
+                remainder -= (y * (result >> 1))
+            else:
+                result += 1
+                remainder -= y
+            if SHOW_PRINT_MSGS:
+                print "result is {result}, and remainder is {remainder}".format(result=result, remainder=remainder)
+    if SHOW_PRINT_MSGS:
+        print "Dividing {x} by {y} results in {result}".format(x=x,y=y,result=result)
+    return result
+
 
 class Ch2SolutionsTestCase(unittest.TestCase):
     # Construct a precomputed table of parities for 16-bit integers
@@ -437,6 +508,34 @@ class Ch2SolutionsTestCase(unittest.TestCase):
         self.assertEqual(Rect(0, 0, 4, 2), getIntersection(CENTRAL_RECT, Rect(0, 0, 10, 10)))
         self.assertEqual(Rect(-2, -2, 4, 4), getIntersection(CENTRAL_RECT, Rect(-2, -5, 4, 30)))
         self.assertEqual(Rect(-4, 0, 8, 2), getIntersection(CENTRAL_RECT, Rect(-9, 0, 30, 2)))
+
+    def testSum(self):
+        # Tests for addition with no arithmetic operators (problem 2.13, part 1)
+        self.assertEqual(0, add(0, 0))
+        self.assertEqual(1, add(1, 0))
+        self.assertEqual(1, add(0, 1))
+        self.assertEqual(19, add(10, 9))
+        self.assertEqual(37, add(23, 14))
+
+    def testMultiply(self):
+        # Tests for multiplication with no arithmetic operators (part 2.13, part 2)
+        self.assertEqual(0, multiply(0, 0))
+        self.assertEqual(0, multiply(9, 0))
+        self.assertEqual(0, multiply(0, 9))
+        self.assertEqual(17, multiply(1, 17))
+        self.assertEqual(17, multiply(17, 1))
+        self.assertEqual(64, multiply(32, 2))
+        self.assertEqual(35, multiply(5, 7))
+        self.assertEqual(28, multiply(14, 2))
+        self.assertEqual(17 * 14, multiply(17, 14))
+
+    def testDivide(self):
+        # Tests for division with multpication, addition and subtraction (2.14)
+        self.assertEqual(2, divide(15, 6))
+        self.assertEqual(0, divide(0, 10))
+        self.assertEqual(7, divide(7, 1))
+        self.assertEqual(5, divide(15, 3))
+        self.assertEqual(34, divide(238, 7))
 
 if __name__ == '__main__':
     unittest.main()
